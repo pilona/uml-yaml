@@ -1,0 +1,32 @@
+# TODO: Packages
+---
+- class: Foo
+  attributes:
+    - + spam
+    - public eggs
+  methods:
+    - -toto
+    - '- titi'
+    - private tata
+    - name: tutu
+      visibility: private
+      type: Integer
+      arguments:
+        - name: spam
+          type: Spam
+        #- eggs
+        - …  # variadic argument, intended to map to eggs. TODO? eggs…
+  inherits: Bar  # Forward declaration!
+- class: Bar
+  inherits: Baz
+- Baz  # Mix and match style of class declaration
+---
+title: Other
+classes:
+  - Foo
+  - Bar
+---
+class: Foo
+attributes:
+  - spam
+  - spamitty
