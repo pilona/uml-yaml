@@ -122,9 +122,12 @@ class Class:
                                 for k, v
                                 in kwargs2.items())
             def surrounder(s, **kwargs2):
+                nonlocal kwargs
+                kwargs = deepcopy(kwargs)
+                kwargs.update(kwargs2)
                 return '<{0}{2}>{1}</{0}>'.format(name,
                                                   s,
-                                                  ' ' +  attributes(**kwargs, **kwargs2) if kwargs or kwargs2 else '')
+                                                  ' ' +  attributes(**kwargs) if kwargs or kwargs2 else '')
             return surrounder
 
         table = element('table', cellborder=0)
