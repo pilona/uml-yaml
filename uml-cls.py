@@ -6,12 +6,85 @@
 # TODO: Deal with circular references.
 # TODO: type, stereotype
 
-from textwrap import indent
+from collections import namedtuple
 from itertools import count
 from functools import singledispatch
+from textwrap import indent
+from enum import Enum
 from copy import deepcopy
 
 import dot
+
+
+AssociationType = Enum('AssociationType',
+                       ['Aggregation',
+                        'Association',
+                        'Composition',
+                        'Dependency',
+                        'Generalization',
+                        'InterfaceRealization',
+                        'Realization'])
+
+
+AssociationEnd = namedtuple('AssociationEnd', ['end', 'multiplicity', 'role'])
+
+class Association:
+    # By convention, the head is the target. So in a realization,
+    # the head is the interface being realized.
+    _association_type_map = {
+        'Aggregation': {
+            'dir': 'back',
+            'arrowtail': 'diamond',
+            'fillcolor': 'white',
+            'style': 'solid',
+        },
+        'Association': {},
+        'Composition': {
+            'dir': 'back',
+            'arrowtail': 'diamond',
+            'fillcolor': 'black',
+            'style': 'solid',
+        },
+        'Dependency': {},
+        'Generalization': {
+            'dir': 'forward',
+            'arrowhead': 'normal',
+            'fillcolor': 'white',
+            'style': 'solid',
+        },
+        # Diff between realization and interface realization
+        'InterfaceRealization': {},
+        'Realization': {
+            'dir': 'forward',
+            'arrowhead': 'normal',
+            'fillcolor': 'white',
+            'style': 'dashed',
+        },
+    }
+
+    def __init__(self,
+                 head, tail,
+                 association_type, association_class=None):
+        self.head = head
+        self.tail = tail
+        self.association_type = association_type
+        self.association_class = association_class
+
+    def to_dot(self):
+        attrs = deepcopy(type(self)._association_type_map[self.association_type])
+        assert not self.head.role or not self.head.multiplicity
+        assert not self.tail.role or not self.tail.multiplicity
+        if self.head.role:
+            attrs['headlabel'] = self.head.role
+        elif self.head.multiplicity:
+            attrs['headlabel'] = self.head.multiplicity
+        if self.tail.role:
+            attrs['taillabel'] = self.tail.role
+        elif self.tail.multiplicity:
+            attrs['taillabel'] = self.tail.multiplicity
+        yield dot.Edge(head='type_' + self.head.end,
+                       tail='type_' + self.tail.end,
+                       attrs=attrs)
 
 
 class Class:
@@ -25,7 +98,10 @@ class Class:
 
         self.attributes = attributes or []
         self.operations = operations or []
-        self.inherits = inherits or []
+        # TODO: Properly parse different forms
+        self.inherits = []
+        if inherits is not None:
+            self.inherits = [inherits]
         self.associations = associations or []
         self.stereotype = stereotype
 
@@ -110,6 +186,10 @@ class Class:
                                  operations(self.operations),
                                  attributes(self.attributes)]))))
         yield dot.Node('type_' + self.identifier, {'label': label})
+        for superclass in self.inherits:
+            yield from Association(head=AssociationEnd(superclass, None, None),
+                                   tail=AssociationEnd(self.identifier, None, None),
+                                   association_type=AssociationType.Generalization.name).to_dot()
         for association in self.associations:
             yield from association.to_dot()
 

@@ -11,3 +11,5 @@
       visibility: public
       type: Integer
       scope: static
+  inherits: Bar
+- class: Bar
