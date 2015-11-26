@@ -12,4 +12,8 @@
       type: Integer
       scope: static
   inherits: Bar
+  associations:
+    - head:
+        name: Bar
+      type: aggregation
 - class: Bar

@@ -32,29 +32,29 @@ class Association:
     # By convention, the head is the target. So in a realization,
     # the head is the interface being realized.
     _association_type_map = {
-        'Aggregation': {
+        AssociationType.Aggregation: {
             'dir': 'back',
             'arrowtail': 'diamond',
             'fillcolor': 'white',
             'style': 'solid',
         },
-        'Association': {},
-        'Composition': {
+        AssociationType.Association: {},
+        AssociationType.Composition: {
             'dir': 'back',
             'arrowtail': 'diamond',
             'fillcolor': 'black',
             'style': 'solid',
         },
-        'Dependency': {},
-        'Generalization': {
+        AssociationType.Dependency: {},
+        AssociationType.Generalization: {
             'dir': 'forward',
             'arrowhead': 'normal',
             'fillcolor': 'white',
             'style': 'solid',
         },
         # Diff between realization and interface realization
-        'InterfaceRealization': {},
-        'Realization': {
+        AssociationType.InterfaceRealization: {},
+        AssociationType.Realization: {
             'dir': 'forward',
             'arrowhead': 'normal',
             'fillcolor': 'white',
@@ -189,13 +189,21 @@ class Class:
         for superclass in self.inherits:
             yield from Association(head=AssociationEnd(superclass, None, None),
                                    tail=AssociationEnd(self.identifier, None, None),
-                                   association_type=AssociationType.Generalization.name).to_dot()
+                                   association_type=AssociationType.Generalization).to_dot()
         for association in self.associations:
-            yield from association.to_dot()
+            head = association['head']
+            tail = association.get('tail', {})
+            yield from Association(head=AssociationEnd(head['name'],
+                                                       head.get('multiplicity'),
+                                                       head.get('role')),
+                                   tail=AssociationEnd(self.identifier,
+                                                       tail.get('multiplicity'),
+                                                       tail.get('role')),
+                                   association_type=AssociationType.__members__[association['type'].title()]).to_dot()
 
 
-# Move to coroutine-based parser, and use .throw to abort? Or
-# would generators and .throw be enough?
+# TODO? Move to coroutine-based parser, and use .throw to abort? Or would
+# generators and .throw be enough?
 
 # http://code.activestate.com/recipes/52310-conditionals-in-expressions/
 
