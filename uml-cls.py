@@ -210,7 +210,7 @@ class Class:
                                    tail=AssociationEnd(self.identifier,
                                                        tail.get('multiplicity'),
                                                        tail.get('role')),
-                                   association_type=AssociationType.__members__[association['type'].title()]).to_dot()
+                                   association_type=AssociationType.__members__[''.join(map(str.title, association['type'].split()))]).to_dot()
 
 
 # TODO? Move to coroutine-based parser, and use .throw to abort? Or would
