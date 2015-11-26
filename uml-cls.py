@@ -33,30 +33,33 @@ class Association:
     # the head is the interface being realized.
     _association_type_map = {
         AssociationType.Aggregation: {
-            'dir': 'back',
-            'arrowtail': 'diamond',
+            'dir': 'both',
+            'arrowhead': 'diamond',
+            'arrowtail': 'none',
             'fillcolor': 'white',
             'style': 'solid',
         },
         AssociationType.Association: {},
         AssociationType.Composition: {
-            'dir': 'back',
-            'arrowtail': 'diamond',
+            'arrowhead': 'diamond',
+            'arrowtail': 'none',
             'fillcolor': 'black',
             'style': 'solid',
         },
         AssociationType.Dependency: {},
         AssociationType.Generalization: {
-            'dir': 'forward',
-            'arrowhead': 'normal',
+            'dir': 'both',
+            'arrowhead': 'none',
+            'arrowtail': 'normal',
             'fillcolor': 'white',
             'style': 'solid',
         },
         # Diff between realization and interface realization
         AssociationType.InterfaceRealization: {},
         AssociationType.Realization: {
-            'dir': 'forward',
-            'arrowhead': 'normal',
+            'dir': 'both',
+            'arrowhead': 'none',
+            'arrowtail': 'normal',
             'fillcolor': 'white',
             'style': 'dashed',
         },
