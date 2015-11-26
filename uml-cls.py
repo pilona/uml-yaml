@@ -39,7 +39,12 @@ class Association:
             'fillcolor': 'white',
             'style': 'solid',
         },
-        AssociationType.Association: {},
+        AssociationType.Association: {
+            'dir': 'both',
+            'arrowhead': 'none',
+            'arrowtail': 'normal',
+            'style': 'solid',
+        },
         AssociationType.Composition: {
             'arrowhead': 'diamond',
             'arrowtail': 'none',
