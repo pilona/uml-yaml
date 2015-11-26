@@ -16,16 +16,16 @@ import dot
 class Class:
     # TODO: Attributes or operations first?
     def __init__(self, identifier,
-                 attributes=[], operations=[],
-                 inherits=[], implements=[],
-                 associations=[],
+                 attributes=None, operations=None,
+                 inherits=None, implements=None,
+                 associations=None,
                  stereotype=None):
         self.identifier = identifier
 
-        self.attributes = attributes
-        self.operations = operations
-        self.inherits = inherits
-        self.associations = associations
+        self.attributes = attributes or []
+        self.operations = operations or []
+        self.inherits = inherits or []
+        self.associations = associations or []
         self.stereotype = stereotype
 
     def to_dot(self):
