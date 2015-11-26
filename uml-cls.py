@@ -279,8 +279,6 @@ if __name__ == '__main__':
         yaml_loader = yaml.Loader
 
     for doc in yaml.safe_load_all(stdin):
-        print('---')
-        print(doc)
         with NamedTemporaryFile(mode='x') as fp:
             print('digraph {', file=fp)
             print('node [ shape="none"; margin="0"; fontname="monospace" ]', file=fp)
