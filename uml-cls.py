@@ -113,4 +113,5 @@ if __name__ == '__main__':
                   file=fp)
             print('}', file=fp)
             fp.seek(0)
-            subprocess.check_call(['dot', '-Txlib'], stdin=fp)
+            tee = subprocess.Popen(['tee', '/dev/tty'], stdin=fp, stdout=subprocess.PIPE)
+            subprocess.check_call(['dot', '-Txlib'], stdin=tee.stdout)
