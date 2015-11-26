@@ -9,6 +9,7 @@
 from textwrap import indent
 from itertools import count
 from functools import singledispatch
+from copy import deepcopy
 
 import dot
 
@@ -29,11 +30,88 @@ class Class:
         self.stereotype = stereotype
 
     def to_dot(self):
-        if self.stereotype is not None:
-            label = r'<<{}>>\n{}'.format(self.stereotype, self.identifier)
-        else:
-            label = self.identifier
-        return dot.Node(self.identifier, {'label': label})
+        identity = lambda s: s
+
+        def element(name, **kwargs):
+            def attributes(**kwargs2):
+                return ' '.join('{}="{}"'.format(k, v)
+                                for k, v
+                                in kwargs2.items())
+            def surrounder(s, **kwargs2):
+                return '<{0}{2}>{1}</{0}>'.format(name,
+                                                  s,
+                                                  ' ' +  attributes(**kwargs, **kwargs2) if kwargs or kwargs2 else '')
+            return surrounder
+
+        table = element('table', cellborder=0)
+        tr = element('tr')
+        center = element('td', align='center')
+        left = element('td', align='left')
+        u = element('u')
+
+        row = lambda s: tr(s) if s else ''
+        cat = lambda *l: ''.join(l)
+        lcat = lambda l: ''.join(l)
+
+        stereotype = lambda s: center(r'<<{}>>'.format(s)) if s else ''
+        identifier = identity
+        operations = lambda operations: maybe(identity,
+                                              identity,
+                                              lcat(tr(left(operation(m))) for m in operations))
+        attributes = lambda attributes: maybe(identity,
+                                              identity,
+                                              lcat(tr(left(attribute(m))) for m in attributes))
+
+        private = lambda s: '- ' + s
+        protected = lambda s: '# ' + s
+        public = lambda s: '+ ' + s
+
+        static = lambda s: s.join(['<u>', '</u>'])
+
+        maybe = lambda p, f, s: f(s) if p else s
+
+        append = lambda suffix: lambda s: s + suffix if s else s
+        typed = lambda a, s: maybe(a.get('type'),
+                                   lambda s: ': '.join([s, a['type']]),
+                                   s)
+
+        scoped = lambda a, s: maybe(a.get('scope'),
+                                    lambda s: {'static': static}[a['scope']](s),
+                                    s)
+        visible = lambda a, s: maybe(a.get('visibility'),
+                                     {'private': private,
+                                      'protected': protected,
+                                      'public': public,
+                                      None: identity}[a.get('visibility')],
+                                     s)
+        attribute = lambda a: visible(a,
+                                      scoped(a,
+                                             typed(a, a['name'])))
+        operation = lambda o: visible(o,
+                                      scoped(o,
+                                             typed(o,
+                                                   parameterized(o, o['name']))))
+        parentheses = '(', ')'
+        braces = '{', '}'
+        html = lambda *args: cat(*args).join(['<', '>'])
+        parenthesized = lambda s: s.join(parentheses)
+        braced = lambda s: s.join(braces)
+        parameterized = lambda o, s: s + parenthesized(', '.join(
+                                                           typed(p, p['name'])
+                                                           for p
+                                                           in o['parameters']))
+        label = html(
+                    table(
+                        '<hr />'.join(
+                            filter(
+                                bool,
+                                [tr(center(stereotype(self.stereotype)
+                                           + identifier(self.identifier))),
+                                 operations(self.operations),
+                                 attributes(self.attributes)]))))
+        yield dot.Node('type_' + self.identifier, {'label': label})
+        for association in self.associations:
+            yield from association.to_dot()
 
 
 # Move to coroutine-based parser, and use .throw to abort? Or
@@ -106,10 +184,10 @@ if __name__ == '__main__':
         print(doc)
         with NamedTemporaryFile(mode='x') as fp:
             print('digraph {', file=fp)
-            print('node [ shape="rectangle" ]', file=fp)
-            print('\n'.join(str(dottable.to_dot())
-                            for dottable
-                            in parse_toplevel(doc)),
+            print('node [ shape="none"; margin="0"; fontname="monospace" ]', file=fp)
+            print('\n'.join(str(strrable)
+                            for dottable in parse_toplevel(doc)
+                            for strrable in dottable.to_dot()),
                   file=fp)
             print('}', file=fp)
             fp.seek(0)

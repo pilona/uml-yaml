@@ -11,7 +11,7 @@
     - name: tutu
       visibility: private
       type: Integer
-      arguments:
+      parameters:
         - name: spam
           type: Spam
         #- eggs

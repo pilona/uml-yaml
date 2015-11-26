@@ -1,0 +1,13 @@
+- class: Foo
+  operations:
+    - name: tutu
+      visibility: private
+      type: Integer
+      parameters:
+        - name: spam
+          type: Spam
+  attributes:
+    - name: TATA
+      visibility: public
+      type: Integer
+      scope: static
