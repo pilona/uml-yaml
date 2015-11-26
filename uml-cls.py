@@ -140,8 +140,8 @@ class Class:
         cat = lambda *l: ''.join(l)
         lcat = lambda l: ''.join(l)
 
-        stereotype = lambda s: center(r'<<{}>>'.format(s)) if s else ''
-        identifier = identity
+        stereotype = lambda s: tr(center(r'&lt;&lt;{}&gt;&gt;'.format(s))) if s else ''
+        identifier = lambda s: tr(center(s))
         operations = lambda operations: maybe(identity,
                                               identity,
                                               lcat(tr(left(operation(m))) for m in operations))
@@ -192,8 +192,8 @@ class Class:
                         '<hr />'.join(
                             filter(
                                 bool,
-                                [tr(center(stereotype(self.stereotype)
-                                           + identifier(self.identifier))),
+                                [cat(stereotype(self.stereotype),
+                                     identifier(self.identifier)),
                                  operations(self.operations),
                                  attributes(self.attributes)]))))
         yield dot.Node('type_' + self.identifier, {'label': label})
