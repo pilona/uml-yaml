@@ -281,6 +281,7 @@ if __name__ == '__main__':
     for doc in yaml.safe_load_all(stdin):
         with NamedTemporaryFile(mode='x') as fp:
             print('digraph {', file=fp)
+            print('splines = ortho', file=fp)
             print('node [ shape="none"; margin="0"; fontname="monospace" ]', file=fp)
             print('\n'.join(str(strrable)
                             for dottable in parse_toplevel(doc)
