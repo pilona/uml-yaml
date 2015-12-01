@@ -193,7 +193,7 @@ class Class:
         parameterized = lambda o, s: s + parenthesized(', '.join(
                                                            typed(p, p['name'])
                                                            for p
-                                                           in o['parameters']))
+                                                           in o.get('parameters', [])))
         label = html(
                     table(
                         '<hr />'.join(
