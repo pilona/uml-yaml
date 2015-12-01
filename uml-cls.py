@@ -7,7 +7,7 @@
 # TODO: type, stereotype
 
 from collections import namedtuple
-from itertools import count
+from itertools import count, groupby, chain
 from functools import singledispatch
 from textwrap import indent
 from enum import Enum
@@ -279,15 +279,24 @@ if __name__ == '__main__':
         yaml_loader = yaml.Loader
 
     for doc in yaml.safe_load_all(stdin):
-        with NamedTemporaryFile(mode='x') as fp:
-            print('digraph {', file=fp)
-            print('splines = ortho', file=fp)
-            print('node [ shape="none"; margin="0"; fontname="monospace" ]', file=fp)
-            print('\n'.join(str(strrable)
-                            for dottable in parse_toplevel(doc)
-                            for strrable in dottable.to_dot()),
-                  file=fp)
-            print('}', file=fp)
-            fp.seek(0)
-            tee = subprocess.Popen(['tee', '/dev/tty'], stdin=fp, stdout=subprocess.PIPE)
-            subprocess.check_call(['dot', '-Txlib'], stdin=tee.stdout)
+        uml_elements = parse_toplevel(doc)
+        dot_elements = chain.from_iterable(uml_element.to_dot()
+                                           for uml_element
+                                           in uml_elements)
+        grouped = {key: list(grouper)
+                   for key, grouper
+                   in groupby(sorted(dot_elements,
+                                     key=lambda dot_element: dot_element.__class__.__name__),
+                              key=type)}
+        nodes = grouped[dot.Node]
+        edges = grouped[dot.Edge]
+        default_node = dot.Node(identifier='node',
+                                attrs={'shape': 'none',
+                                       'margin': 0,
+                                       'fontname': '"monospace"'})
+        nodes.insert(0, default_node)
+        graph_attrs = {'splines': 'ortho'}
+        print(str(dot.Digraph(attrs=graph_attrs,
+                              nodes=nodes,
+                              edges=edges)))
+        break  # TODO: Multiple documents
