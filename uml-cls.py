@@ -306,7 +306,7 @@ if __name__ == '__main__':
                                        'margin': 0,
                                        'fontname': '"monospace"'})
         nodes.insert(0, default_node)
-        graph_attrs = {'splines': 'ortho'}
+        graph_attrs = {}
         print(str(dot.Digraph(attrs=graph_attrs,
                               nodes=nodes,
                               edges=edges)))

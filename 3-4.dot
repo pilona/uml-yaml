@@ -1,0 +1,94 @@
+digraph {
+    nodesep = 0.5
+    node [
+        shape = none
+        fontname = "monospace"
+    ]
+    SoupProducer [
+        label = <<table cellborder="0"><tr><td align="center">&lt;&lt;abstract&gt;&gt;</td></tr><tr><td align="center">SoupProducer</td></tr><hr /><tr><td align="left">+ getProducerLocation(): String</td></tr><tr><td align="left">+ makeChickenSoup()</td></tr><tr><td align="left">+ makeClamChowder()</td></tr><tr><td align="left">+ makeFishChowder()</td></tr><tr><td align="left">+ makeMinnestrone()</td></tr><tr><td align="left">+ makePastaFazul()</td></tr><tr><td align="left">+ makeTofuSoup()</td></tr><tr><td align="left">+ makeVegetableSoup()</td></tr><hr /><tr><td align="left">- producerLocation: String</td></tr></table>>
+    ]
+    BostonSoupProducer [
+        label = <<table cellborder="0"><tr><td align="center">BostonSoupProducer</td></tr><hr /><tr><td align="left">+ makeClamChowder()</td></tr><tr><td align="left">+ makeFishChowder()</td></tr></table>>
+    ]
+    HonoluluSoupProducer [
+        label = <<table cellborder="0"><tr><td align="center">HonoluluSoupProducer</td></tr><hr /><tr><td align="left">+ makeClamChowder()</td></tr><tr><td align="left">+ makeFishChowder()</td></tr></table>>
+    ]
+    Soup [
+        label = <<table cellborder="0"><tr><td align="center">Soup</td></tr><hr /><tr><td align="left">+ getSoupName(): String</td></tr><tr><td align="left">+ toString(): String</td></tr><hr /><tr><td align="left">- soupName: String</td></tr><tr><td align="left">- soupIngredients: ArrayList</td></tr></table>>
+    ]
+    Test [
+        label = <<table cellborder="0"><tr><td align="center">Test</td></tr><hr /><tr><td align="left">+ <u>MakeSoupOfTheDay(aSoupProducer: SoupProducer): Soup</u></td></tr><tr><td align="left">+ <u>main(args: String)</u></td></tr></table>>
+    ]
+    BostonClamChowder [
+        label = <<table cellborder="0"><tr><td align="center">BostonClamChowder</td></tr></table>>
+    ]
+    BostonFishChowder [
+        label = <<table cellborder="0"><tr><td align="center">BostonFishChowder</td></tr></table>>
+    ]
+    HonoluluClamChowder [
+        label = <<table cellborder="0"><tr><td align="center">HonoluluClamChowder</td></tr></table>>
+    ]
+    HonoluluFishChowder [
+        label = <<table cellborder="0"><tr><td align="center">HonoluluFishChowder</td></tr></table>>
+    ]
+    ChickenSoup [
+        label = <<table cellborder="0"><tr><td align="center">ChickenSoup</td></tr></table>>
+    ]
+    ClamChowder [
+        label = <<table cellborder="0"><tr><td align="center">ClamChowder</td></tr></table>>
+    ]
+    FishChowder [
+        label = <<table cellborder="0"><tr><td align="center">FishChowder</td></tr></table>>
+    ]
+    Minnestrone [
+        label = <<table cellborder="0"><tr><td align="center">Minnestrone</td></tr></table>>
+    ]
+    PastaFazul [
+        label = <<table cellborder="0"><tr><td align="center">PastaFazul</td></tr></table>>
+    ]
+    TofuSoup [
+        label = <<table cellborder="0"><tr><td align="center">TofuSoup</td></tr></table>>
+    ]
+    VegetableSoup [
+        label = <<table cellborder="0"><tr><td align="center">VegetableSoup</td></tr></table>>
+    ]
+    edge [
+        arrowtail = "none"
+        arrowhead = "diamond"
+        fillcolor = "black"
+        style = "solid"
+    ]
+    BostonFishChowder -> BostonSoupProducer
+    BostonClamChowder -> BostonSoupProducer
+    HonoluluClamChowder -> HonoluluSoupProducer
+    Soup -> Test
+    SoupProducer -> Test
+    HonoluluFishChowder -> HonoluluSoupProducer
+    ChickenSoup -> SoupProducer
+    ClamChowder -> SoupProducer
+    FishChowder -> SoupProducer
+    Minnestrone -> SoupProducer
+    PastaFazul -> SoupProducer
+    TofuSoup -> SoupProducer
+    VegetableSoup -> SoupProducer
+    edge [
+        arrowtail = "normal"
+        arrowhead = "none"
+        dir = "both"
+        fillcolor = "white"
+        style = "solid"
+    ]
+    SoupProducer -> BostonSoupProducer
+    SoupProducer -> HonoluluSoupProducer
+    ClamChowder -> BostonClamChowder
+    FishChowder -> BostonFishChowder
+    ClamChowder -> HonoluluClamChowder
+    FishChowder -> HonoluluFishChowder
+    Soup -> ChickenSoup
+    Soup -> ClamChowder
+    Soup -> FishChowder
+    Soup -> Minnestrone
+    Soup -> PastaFazul
+    Soup -> TofuSoup
+    Soup -> VegetableSoup
+}
