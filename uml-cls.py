@@ -106,10 +106,17 @@ class Class:
 
         self.attributes = attributes or []
         self.operations = operations or []
-        # TODO: Properly parse different forms
+        # TODO: Properly parse different forms in *caller*
         self.inherits = []
-        if inherits is not None:
+        self.implements = []
+        if isinstance(inherits, list):
+            self.inherits = inherits
+        elif isinstance(inherits, str):
             self.inherits = [inherits]
+        if isinstance(implements, list):
+            self.implements = implements
+        elif isinstance(implements, str):
+            self.implements = [implements]
         self.associations = associations or []
         self.stereotype = stereotype
 
@@ -201,6 +208,10 @@ class Class:
             yield from Association(head=AssociationEnd(superclass, None, None),
                                    tail=AssociationEnd(self.identifier, None, None),
                                    association_type=AssociationType.Generalization).to_dot()
+        for interface in self.implements:
+            yield from Association(head=AssociationEnd(interface, None, None),
+                                   tail=AssociationEnd(self.identifier, None, None),
+                                   association_type=AssociationType.InterfaceRealization).to_dot()
         for association in self.associations:
             head = association['head']
             tail = association.get('tail', {})
