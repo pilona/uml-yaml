@@ -1,9 +1,16 @@
 from collections import namedtuple
 
 
+def _node_name(identifier):
+    if identifier in {'node', 'edge'}:
+        return identifier
+    else:
+        return '"' + identifier + '"'
+
+
 class Node(namedtuple('Node', ['identifier', 'attrs'])):
     def __str__(self):
-        return '\n'.join([self.identifier + ' ['] +
+        return '\n'.join([_node_name(self.identifier) + ' ['] +
                          ['{attr} = {value}'.format(attr=attr, value=value)
                           for attr, value
                           in self.attrs.items()] +
@@ -11,7 +18,7 @@ class Node(namedtuple('Node', ['identifier', 'attrs'])):
 
 class Edge(namedtuple('Edge', ['head', 'tail', 'attrs'])):
     def __str__(self):
-        return '\n'.join([self.head + ' -> ' + self.tail + ' ['] +
+        return '\n'.join([_node_name(self.head) + ' -> ' + _node_name(self.tail) + ' ['] +
                          ['{attr} = "{value}"'.format(attr=attr, value=value)
                           for attr, value
                           in self.attrs.items()] +
