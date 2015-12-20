@@ -147,7 +147,8 @@ class Class:
         cat = lambda *l: ''.join(l)
         lcat = lambda l: ''.join(l)
 
-        stereotype = lambda s: tr(center(r'&lt;&lt;{}&gt;&gt;'.format(s))) if s else ''
+        # TODO: Multiple stereotypes, tags
+        stereotype = lambda s: tr(center(r'«{}»'.format(s))) if s else ''
         identifier = lambda s: tr(center(s))
         operations = lambda operations: maybe(identity,
                                               identity,
