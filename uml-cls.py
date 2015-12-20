@@ -182,10 +182,26 @@ class Class:
         attribute = lambda a: visible(a,
                                       scoped(a,
                                              typed(a, a['name'])))
-        operation = lambda o: visible(o,
-                                      scoped(o,
-                                             typed(o,
-                                                   parameterized(o, o['name']))))
+        tagged = lambda o, s: maybe(o.get('tags'),
+                                    lambda s: braced(','.join('='.join([tag, value])
+                                                              for tag, value
+                                                              in o['tags'].items())) + s,
+                                    s)
+        # TODO? Multiple stereotypes
+        stereotyped = lambda o, s: maybe(o.get('stereotype'),
+                                         lambda s: ''.join(['«', o['stereotype'], '»', s]),
+                                         s)
+        operation = lambda o: stereotyped(o,
+            tagged(o,
+                visible(o,
+                    scoped(o,
+                        typed(o,
+                            parameterized(o, o['name'])
+                        )
+                    )
+                )
+            )
+        )
         parentheses = '(', ')'
         braces = '{', '}'
         html = lambda *args: cat(*args).join(['<', '>'])
