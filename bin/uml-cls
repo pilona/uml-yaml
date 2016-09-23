@@ -39,7 +39,7 @@ for doc in yaml.safe_load_all(args.input):
     default_node = dot.Node(identifier='node',
                             attrs={'shape': 'none',
                                    'margin': 0,
-                                   'fontname': 'monospace'})
+                                   'fontname': '"' + cls.DEFAULT_FONT + '"'})
     nodes.insert(0, default_node)
     graph_attrs = {#'splines': 'ortho'
                    'nodesep': '0.5'}

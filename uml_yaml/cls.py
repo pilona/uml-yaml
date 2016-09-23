@@ -15,6 +15,10 @@ from copy import deepcopy
 from . import dot
 
 
+#DEFAULT_FONT = 'monospace'
+DEFAULT_FONT = 'Source Code Pro'
+
+
 AssociationType = Enum('AssociationType',
                        ['Aggregation',
                         'Association',
