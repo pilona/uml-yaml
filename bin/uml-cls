@@ -1,0 +1,40 @@
+#! /usr/bin/env python3
+
+from sys import stdin
+from textwrap import indent
+from tempfile import NamedTemporaryFile
+from itertools import groupby, chain
+import subprocess
+
+import yaml
+
+from uml_yaml import cls, dot
+
+try:
+    yaml_loader = yaml.CLoader
+except:
+    yaml_loader = yaml.Loader
+
+for doc in yaml.safe_load_all(stdin):
+    uml_elements = cls.parse_toplevel(doc)
+    dot_elements = chain.from_iterable(uml_element.to_dot()
+                                       for uml_element
+                                       in uml_elements)
+    grouped = {key: list(grouper)
+               for key, grouper
+               in groupby(sorted(dot_elements,
+                                 key=lambda dot_element: dot_element.__class__.__name__),
+                          key=type)}
+    nodes = grouped[dot.Node]
+    edges = grouped[dot.Edge]
+    default_node = dot.Node(identifier='node',
+                            attrs={'shape': 'none',
+                                   'margin': 0,
+                                   'fontname': 'monospace'})
+    nodes.insert(0, default_node)
+    graph_attrs = {#'splines': 'ortho'
+                   'nodesep': '0.5'}
+    print(str(dot.Digraph(attrs=graph_attrs,
+                          nodes=nodes,
+                          edges=edges)))
+    break  # TODO: Multiple documents

@@ -7,13 +7,12 @@
 # TODO: type, stereotype
 
 from collections import namedtuple
-from itertools import count, groupby, chain
+from itertools import count
 from functools import singledispatch
-from textwrap import indent
 from enum import Enum
 from copy import deepcopy
 
-import dot
+from . import dot
 
 
 AssociationType = Enum('AssociationType',
@@ -294,38 +293,4 @@ def parse_toplevel(doc):
                 dict: parse_toplevel_map,}[type(doc)](doc)
 
 
-if __name__ == '__main__':
-    from sys import stdin
-    from tempfile import NamedTemporaryFile
-    import subprocess
-
-    import yaml
-
-    try:
-        yaml_loader = yaml.CLoader
-    except:
-        yaml_loader = yaml.Loader
-
-    for doc in yaml.safe_load_all(stdin):
-        uml_elements = parse_toplevel(doc)
-        dot_elements = chain.from_iterable(uml_element.to_dot()
-                                           for uml_element
-                                           in uml_elements)
-        grouped = {key: list(grouper)
-                   for key, grouper
-                   in groupby(sorted(dot_elements,
-                                     key=lambda dot_element: dot_element.__class__.__name__),
-                              key=type)}
-        nodes = grouped[dot.Node]
-        edges = grouped[dot.Edge]
-        default_node = dot.Node(identifier='node',
-                                attrs={'shape': 'none',
-                                       'margin': 0,
-                                       'fontname': '"monospace"'})
-        nodes.insert(0, default_node)
-        graph_attrs = {#'splines': 'ortho'
-                       'nodesep': '0.5'}
-        print(str(dot.Digraph(attrs=graph_attrs,
-                              nodes=nodes,
-                              edges=edges)))
-        break  # TODO: Multiple documents
+__all__ = 'parse_toplevel',
