@@ -2,6 +2,7 @@
 
 from sys import stdin
 from textwrap import indent
+from argparse import ArgumentParser
 from tempfile import NamedTemporaryFile
 from itertools import groupby, chain
 import subprocess
@@ -15,7 +16,15 @@ try:
 except:
     yaml_loader = yaml.Loader
 
-for doc in yaml.safe_load_all(stdin):
+from argparse import ArgumentParser, FileType, OPTIONAL
+
+
+argument_parser = ArgumentParser(description='YAML to UML class diagram converter')
+argument_parser.add_argument('input', type=FileType('r'), default=stdin, nargs=OPTIONAL)
+args = argument_parser.parse_args()
+
+
+for doc in yaml.safe_load_all(args.input):
     uml_elements = cls.parse_toplevel(doc)
     dot_elements = chain.from_iterable(uml_element.to_dot()
                                        for uml_element

@@ -4,7 +4,7 @@ from glob import glob
 
 setup(
     name='uml-yaml',
-    version='0.1',
+    version='0.2',
     author='Alex Pilon',
     description='WYSIWYM YAML to UML/dot diagram generator.',
     url='https://github.com/pilona/uml-yaml',
